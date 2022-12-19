@@ -1,5 +1,4 @@
 from datetime import datetime
-from decimal import Decimal
 
 import yfinance as yf
 from exchange_rate import ExchangeRate
@@ -12,9 +11,9 @@ def get_rate():
     Get market rate from Yahoo Finance
     '''
     ticker = yf.Ticker('SGDPHP=X')
-    market_price = str(ticker.info['regularMarketPrice'])
+    rate = str(ticker.info['regularMarketPrice'])
     date_now = datetime.now()
-    return ExchangeRate(date_now, SOURCE, Decimal(market_price), 0, date_now)
+    return ExchangeRate(effective_on=date_now, source=SOURCE, rate=rate, fee=0, updated_on=date_now)
 
 
 def main():

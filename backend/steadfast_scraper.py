@@ -1,7 +1,5 @@
-import time
 import asyncio
 from datetime import datetime
-from decimal import Decimal
 import aiohttp
 
 from exchange_rate import ExchangeRate
@@ -21,16 +19,13 @@ async def get_rate() -> ExchangeRate:
         async with session.get(url, params=payload, timeout=20) as response:
             data = await response.json()
 
-    rate = Decimal(data['currency_rate'])
+    rate = data['currency_rate']
     date_now = datetime.now()
-    return ExchangeRate(date_now, SOURCE, rate, FEE, date_now)
+    return ExchangeRate(effective_on=date_now, source=SOURCE, rate=rate, fee=FEE, updated_on=date_now)
 
 
 async def main():
-    s = time.perf_counter()
     rate = await get_rate()
-    elapsed = time.perf_counter() - s
-    print(f'Done in {elapsed:0.2f} seconds')
     print(rate)
 
 

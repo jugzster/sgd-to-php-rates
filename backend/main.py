@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 import uvicorn
-import yfinance as yf
+from exchange_rate import ExchangeRate
 
+import rate_scraper
 from rate_repository import RateRepository
 
 app = FastAPI()
@@ -9,27 +10,24 @@ app = FastAPI()
 
 @app.get('/')
 async def root():
-    return {'message': "Hi Sel"}
+    return {'message': "Hi Sel and Kurt"}
 
 
-@app.get('/rates')
+@app.get('/rates', response_model=list[ExchangeRate])
 async def get_rates():
+    # TODO Cache repository / connection
     db = RateRepository()
     rates = db.get_latest_rates()
     return rates
 
 
-def get_market_rate():
-    ticker = yf.Ticker('SGDPHP=X')
-    market_rate = ticker.info['regularMarketPrice']
-    print('market rate', market_rate)
-    return market_rate
-
-
-@app.post('/scraperates')
+@app.post('/scraperates', response_model=list[ExchangeRate])
 async def scrape_rates():
-    pass
-
+    rates = await rate_scraper.scrape_rates()
+    db = RateRepository()
+    db.save_latest_rates(rates)
+    db.save_historical_rates(rates)
+    return rates
 
 if __name__ == '__main__':
     uvicorn.run(app)

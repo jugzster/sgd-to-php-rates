@@ -36,13 +36,13 @@ async def get_rate() -> ExchangeRate:
     rates = data['results']['assets'][0]['recData']
     php_rate = next(
         x for x in rates if x['currency'] == 'PHP' and x['quoteCurrency'] == 'SGD')
-    exchange_rate = Decimal(
-        php_rate['ttInverseBuy']) * int(php_rate['baseCurrencyUnit'])
-    effective_datetime = datetime.strptime(
+    rate = Decimal(php_rate['ttInverseBuy']) * \
+        int(php_rate['baseCurrencyUnit'])
+    effective_on = datetime.strptime(
         data['effectiveDateAndTime'], '%Y-%m-%d %H:%M:%S')
 
     date_now = datetime.now()
-    return ExchangeRate(effective_datetime, SOURCE, exchange_rate, FEE, date_now)
+    return ExchangeRate(effective_on=effective_on, source=SOURCE, rate=rate, fee=FEE, updated_on=date_now)
 
 
 async def main():

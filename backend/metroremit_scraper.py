@@ -1,6 +1,5 @@
 import asyncio
 from datetime import datetime
-from decimal import Decimal
 
 from playwright.async_api import async_playwright
 from exchange_rate import ExchangeRate
@@ -26,7 +25,7 @@ async def get_rate() -> ExchangeRate:
         rate_text = main_text.replace(' ', '').upper()
         rate = rate_text.split('=', maxsplit=2)[1].removeprefix('PHP')
         date_now = datetime.now()
-        return ExchangeRate(date_now, SOURCE, rate, FEE, date_now)
+        return ExchangeRate(effective_on=date_now, source=SOURCE, rate=rate, fee=FEE, updated_on=date_now)
 
 
 async def main():

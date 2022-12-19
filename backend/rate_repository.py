@@ -17,18 +17,18 @@ class RateRepository:
         client = MongoClient(db_url)
         self.db = client.exchangeRateDB
 
-    def get_latest_rates(self):
+    def get_latest_rates(self) -> list[ExchangeRate]:
         try:
             dbCollection = self.db.latestRates
-            results = list(dbCollection.find(
-                {}, {"_id": 0}))
-            # rates = [self.to_exchange_rate(r) for r in results]
-            return results
+            results = dbCollection.find({})
+            rates = [self.to_exchange_rate(r) for r in results]
+            return rates
         except Exception as exception:
             print(f'DB error getting latestRates: {exception}')
 
-    def to_exchange_rate(self) -> ExchangeRate:
-        pass
+    @staticmethod
+    def to_exchange_rate(rate) -> ExchangeRate:
+        return ExchangeRate(effective_on=rate['effectiveOn'], source=rate['source'], rate=rate['rate'].to_decimal(), fee=rate['fee'], updated_on=rate['updatedOn'])
 
     def save_latest_rates(self, exchange_rates: list[ExchangeRate]):
         try:
@@ -49,7 +49,9 @@ class RateRepository:
         except Exception as exception:
             print(f'DB error occurred saving to latestRates: {exception}')
 
-    def to_mongodb_object(self, exchange_rate: ExchangeRate):
+    @staticmethod
+    def to_mongodb_object(exchange_rate: ExchangeRate):
+        # TODO rename Mongodb fields for consistency i.e. effective_on
         return {
             'effectiveOn': exchange_rate.effective_on,
             'rate': Decimal128(exchange_rate.rate),
