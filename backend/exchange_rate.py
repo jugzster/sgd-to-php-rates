@@ -7,8 +7,8 @@ class ExchangeRate(BaseModel):
     '''
     Exchange Rate data
     '''
-    effective_on: datetime
     source: str
+    effective_on: datetime
     rate: Decimal
     fee: float
     updated_on: datetime

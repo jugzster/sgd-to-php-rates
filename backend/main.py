@@ -23,7 +23,9 @@ async def get_rates():
 
 @app.post('/scraperates', response_model=list[ExchangeRate])
 async def scrape_rates():
-    rates = await rate_scraper.scrape_rates()
+    rates, _ = await rate_scraper.scrape_rates()
+
+    # TODO async via Motor
     db = RateRepository()
     db.save_latest_rates(rates)
     db.save_historical_rates(rates)
