@@ -30,6 +30,3 @@ async def scrape_rates():
     db.save_latest_rates(rates)
     db.save_historical_rates(rates)
     return rates
-
-if __name__ == '__main__':
-    uvicorn.run(app)
