@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from facebook_scraper import get_posts
+from exceptions import FacebookPostNotFoundError
 from exchange_rate import ExchangeRate
 
 SOURCE = 'IRemit Walk-in'
@@ -20,7 +21,7 @@ def get_rate():
         timestamp: datetime = post['time']
 
         if not images_description:
-            return None
+            continue
 
         description: str = images_description[0].lower()
 
@@ -40,7 +41,8 @@ def get_rate():
                     break
 
                 i += 1
-    return None
+    raise FacebookPostNotFoundError(
+        'IRemit Walk-in rate from Facebook not found')
 
 
 def is_decimal(string) -> bool:
