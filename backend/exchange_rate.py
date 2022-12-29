@@ -4,9 +4,10 @@ from pydantic import BaseModel
 
 
 class ExchangeRate(BaseModel):
-    '''
+    """
     Exchange Rate data
-    '''
+    """
+
     source: str
     effective_on: datetime
     rate: Decimal
