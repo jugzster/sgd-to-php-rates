@@ -6,12 +6,12 @@ import time
 import aiohttp
 from exchange_rate import ExchangeRate
 
-SOURCE = 'DBS'
+SOURCE = "DBS"
 FEE = 0
 
 
 async def get_rate() -> ExchangeRate:
-    '''
+    """
     Get from https://www.dbs.com.sg/sg-rates-api/v1/api/sgrates/getCurrencyConversionRates?FETCH_LATEST=1670297419516
     FETCH_LATEST=[timestamp]
     Sample:
@@ -25,34 +25,39 @@ async def get_rate() -> ExchangeRate:
         "baseCurrencyUnit": "100",
         "quoteCurrencyUnit": "1"
         },
-    '''
+    """
     timestamp = round(datetime.now().timestamp() * 1000)
-    url = f'https://www.dbs.com.sg/sg-rates-api/v1/api/sgrates/getCurrencyConversionRates?FETCH_LATEST={timestamp}'
+    url = f"https://www.dbs.com.sg/sg-rates-api/v1/api/sgrates/getCurrencyConversionRates?FETCH_LATEST={timestamp}"
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url, timeout=20) as response:
             data = await response.json()
 
-    rates = data['results']['assets'][0]['recData']
+    rates = data["results"]["assets"][0]["recData"]
     php_rate = next(
-        x for x in rates if x['currency'] == 'PHP' and x['quoteCurrency'] == 'SGD')
-    rate = Decimal(php_rate['ttInverseBuy']) * \
-        int(php_rate['baseCurrencyUnit'])
-    effective_on = datetime.strptime(
-        data['effectiveDateAndTime'], '%Y-%m-%d %H:%M:%S')
+        x for x in rates if x["currency"] == "PHP" and x["quoteCurrency"] == "SGD"
+    )
+    rate = Decimal(php_rate["ttInverseBuy"]) * int(php_rate["baseCurrencyUnit"])
+    effective_on = datetime.strptime(data["effectiveDateAndTime"], "%Y-%m-%d %H:%M:%S")
 
     date_now = datetime.now()
-    return ExchangeRate(effective_on=effective_on, source=SOURCE, rate=rate, fee=FEE, updated_on=date_now)
+    return ExchangeRate(
+        effective_on=effective_on,
+        source=SOURCE,
+        rate=rate,
+        fee=FEE,
+        updated_on=date_now,
+    )
 
 
 async def main():
     s = time.perf_counter()
     rate = await get_rate()
     elapsed = time.perf_counter() - s
-    print(f'Done in {elapsed:0.2f} seconds')
+    print(f"Done in {elapsed:0.2f} seconds")
     print(rate)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     asyncio.run(main())

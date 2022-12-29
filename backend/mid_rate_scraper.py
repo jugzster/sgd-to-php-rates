@@ -3,17 +3,19 @@ from datetime import datetime
 import yfinance as yf
 from exchange_rate import ExchangeRate
 
-SOURCE = 'MidRate'
+SOURCE = "MidRate"
 
 
 def get_rate():
-    '''
+    """
     Get market rate from Yahoo Finance
-    '''
-    ticker = yf.Ticker('SGDPHP=X')
-    rate = str(ticker.info['regularMarketPrice'])
+    """
+    ticker = yf.Ticker("SGDPHP=X")
+    rate = str(ticker.info["regularMarketPrice"])
     date_now = datetime.now()
-    return ExchangeRate(effective_on=date_now, source=SOURCE, rate=rate, fee=0, updated_on=date_now)
+    return ExchangeRate(
+        effective_on=date_now, source=SOURCE, rate=rate, fee=0, updated_on=date_now
+    )
 
 
 def main():
@@ -21,5 +23,5 @@ def main():
     print(rate)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

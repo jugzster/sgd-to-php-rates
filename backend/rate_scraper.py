@@ -14,7 +14,7 @@ import metroremit_scraper
 import steadfast_scraper
 import wise_scraper
 
-with open('log_config.yaml', 'r', encoding='utf-8') as f:
+with open("log_config.yaml", "r", encoding="utf-8") as f:
     config = yaml.safe_load(f.read())
     logging.config.dictConfig(config)
 
@@ -33,13 +33,14 @@ async def scrape_rates() -> tuple[list[ExchangeRate], list[Exception]]:
         dbs_scraper.get_rate(),
         metroremit_scraper.get_rate(),
         wise_scraper.get_rate(),
-        return_exceptions=True)
+        return_exceptions=True,
+    )
 
     rates = [rate for rate in results if not isinstance(rate, Exception)]
     errors = [rate for rate in results if isinstance(rate, Exception)]
 
     elapsed = time.perf_counter() - start
-    logger.info('Scraped %s rates, took %ss', len(rates), f'{elapsed:0.2f}')
+    logger.info("Scraped %s rates, took %ss", len(rates), f"{elapsed:0.2f}")
 
     for rate in rates:
         logger.info(rate)
@@ -53,5 +54,6 @@ async def scrape_rates() -> tuple[list[ExchangeRate], list[Exception]]:
 async def main():
     _, _ = await scrape_rates()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     asyncio.run(main())

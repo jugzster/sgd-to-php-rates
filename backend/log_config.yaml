@@ -13,7 +13,7 @@ handlers:
     stream: ext://sys.stdout
   file:
     class: logging.FileHandler
-    level: INFO
+    level: ERROR
     formatter: simple
     filename: rates.log
 root:
