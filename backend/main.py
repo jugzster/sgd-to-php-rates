@@ -3,6 +3,7 @@ import secrets
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 from exchange_rate import ExchangeRate
@@ -11,6 +12,14 @@ from database import get_latest_rates, save_latest_rates, save_historical_rates
 
 app = FastAPI()
 security = HTTPBasic()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 load_dotenv()
 api_user = os.getenv("API_USER")
