@@ -36,7 +36,9 @@ async def scrape(credentials: HTTPBasicCredentials = Depends(security)):
     # TODO async via Motor
     save_latest_rates(rates)
     save_historical_rates(rates)
-    return rates
+
+    latest_rates = get_latest_rates()
+    return latest_rates
 
 
 def verify(credentials: HTTPBasicCredentials) -> None:

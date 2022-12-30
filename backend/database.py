@@ -36,6 +36,7 @@ def get_latest_rates() -> list[ExchangeRate]:
 
 def to_exchange_rate(rate) -> ExchangeRate:
     return ExchangeRate(
+        id=str(rate["_id"]),
         effective_on=rate["effectiveOn"],
         source=rate["source"],
         rate=rate["rate"].to_decimal(),
