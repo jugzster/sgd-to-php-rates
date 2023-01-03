@@ -1,5 +1,7 @@
 import fetchJson from "./api";
 
+const API_URL = process.env.API_URL;
+
 export type Status = Readonly<{
   id: string;
   status: string;
@@ -8,6 +10,6 @@ export type Status = Readonly<{
 }>;
 
 export async function getLatestStatus(): Promise<Status> {
-  const url = "http://127.0.0.1:8000/status";
+  const url = `${API_URL}/status`;
   return await fetchJson(url);
 }
