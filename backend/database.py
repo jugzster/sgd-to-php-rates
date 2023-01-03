@@ -95,13 +95,19 @@ def save_historical_rates(exchange_rates: list[ExchangeRate], updated_on: dateti
 def save_status(updated_on: datetime, errors: list[Exception]):
     try:
         collection = db.status
+        status_result = "Error" if errors else "OK"
         status = {
-            "status": "Error" if errors else "OK",
+            "status": status_result,
             "updatedOn": updated_on,
             "errors": [str(e) for e in errors],
         }
         result = collection.insert_one(status)
-        logger.info("status created, ID %s", result.inserted_id)
+        logger.info(
+            "status %s, %i errors, ID %s",
+            status_result,
+            len(errors),
+            result.inserted_id,
+        )
     except Exception:
         logger.exception("DB error occurred saving to status")
 
