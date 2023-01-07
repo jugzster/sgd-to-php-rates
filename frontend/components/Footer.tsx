@@ -12,11 +12,12 @@ const Footer = ({ status }: FooterProps) => {
   dayjs.extend(utc);
 
   const updatedOnUtc = dayjs.utc(status.updated_on);
-  const lastUpdated = updatedOnUtc.from(new Date());
+  const utcNow = new Date().toUTCString();
+  const lastUpdated = updatedOnUtc.from(utcNow);
 
   return (
-    <div className="text-center text-sm mt-4 text-gray-500">
-      Last updated: <span>{lastUpdated}</span>
+    <div className="text-center text-sm text-gray-500">
+      <p>Last updated: {lastUpdated}</p>
     </div>
   );
 };
