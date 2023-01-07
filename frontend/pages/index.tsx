@@ -1,11 +1,12 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "@next/font/google";
-import styles from "../styles/Home.module.css";
-import React, { FC, useState } from "react";
+import React, { useState } from "react";
+import { GetStaticProps, NextPage } from "next";
 import { ExchangeRate, getRates } from "../lib/exchangeRate";
 import { Status, getLatestStatus } from "../lib/status";
-import { GetStaticProps, NextPage } from "next";
+import { amountFormatter } from "../lib/formatter";
+import Input from "./Input";
+import Footer from "./Footer";
 
 type HomePageProps = {
   rates: ExchangeRate[];
@@ -38,21 +39,38 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
   const initSgd = 500;
   const [sgdAmountStr, setSgdAmountStr] = useState(initSgd.toString());
   const [sgdAmount, setSgdAmount] = useState(initSgd);
-  const [phpAmount, setPhpAmount] = useState(initSgd * midRate);
 
-  const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const initPhp = initSgd * midRate;
+  const [phpAmountStr, setPhpAmountStr] = useState(initPhp.toString());
+
+  const handleSgdAmountChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const newValue = event.target.value;
-    console.log("newValue", newValue);
+    console.log("New SGD value", newValue);
     if (/^\d*(\.\d*)?$/.test(newValue)) {
-      console.log(`${newValue} is a number`);
-
       setSgdAmountStr(newValue);
+
       const newSgdAmount = newValue ? parseFloat(newValue) : 0;
       setSgdAmount(newSgdAmount);
 
-      setPhpAmount(newSgdAmount * midRate);
-    } else {
-      console.log(`"${newValue}" is NOT a number`);
+      const newPhpAmount = newSgdAmount * midRate;
+      setPhpAmountStr(amountFormatter.format(newPhpAmount));
+    }
+  };
+
+  const handlePhpAmountChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newValue = event.target.value;
+    console.log("New PHP value", newValue);
+    if (/^\d*(\.\d*)?$/.test(newValue)) {
+      setPhpAmountStr(newValue);
+
+      const newPhpAmount = newValue ? parseFloat(newValue) : 0;
+      const newSgdAmount = newPhpAmount / midRate;
+      setSgdAmount(newSgdAmount);
+      setSgdAmountStr(amountFormatter.format(newSgdAmount));
     }
   };
 
@@ -85,54 +103,63 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className="grid place-items-center">
-          <h1 className="text-3xl font-bold underline">SGD to PHP rates</h1>
-          <div>
-            <p>MARKET RATE: 1 SGD = {midRate} PHP</p>
+        <div className="container mx-auto pt-4 px-4">
+          <header>
+            <menu>
+              <div className="flex justify-between">
+                <span>Say Hello</span>
+                <span>Dark Mode</span>
+              </div>
+            </menu>
+            <div className="text-center text-3xl mt-4">
+              <h1 className="font-bold underline">SGD to PHP Rates</h1>
+            </div>
+          </header>
+          <div className="text-center font-semibold my-8 h-16">
+            <p className="text-slate-400">MARKET RATE: 1 SGD =</p>
+            <p className="text-xl hover:text-2xl font-bold duration-200">
+              {midRate} Philippine Pesos
+            </p>
           </div>
+          {/* TODO Change to grid */}
           <div className="flex justify-center">
-            <div>
-              SGD:
-              <br />
-              <input
-                type="text"
-                maxLength={8}
-                value={sgdAmountStr}
-                onChange={handleAmountChange}
-              />
+            <div className="px-4">
+              <p>SGD</p>
+              <Input value={sgdAmountStr} onChange={handleSgdAmountChange} />
             </div>
-            <div>
-              PHP:
-              <br />
-              <label>{phpAmount.toFixed(2)}</label>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              aria-hidden="true"
+              className="h-4 w-4"
+            >
+              <path
+                fill="currentColor"
+                fill-rule="evenodd"
+                d="M11.726 1.273l2.387 2.394H.667V5h13.446l-2.386 2.393.94.94 4-4-4-4-.94.94zM.666 12.333l4 4 .94-.94L3.22 13h13.447v-1.333H3.22l2.386-2.394-.94-.94-4 4z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            <div className="px-4">
+              <p>PHP</p>
+              <Input value={phpAmountStr} onChange={handlePhpAmountChange} />
             </div>
           </div>
-          <div className="p-4">
-            <table>
-              <thead>
-                <tr>
-                  <th>Source</th>
-                  <th>Rate</th>
-                  <th>Fees</th>
-                  <th>Total Amount</th>
+          <div className="flex justify-center mt-12 mb-12 overflow-auto relative">
+            <table className="table-fixed text-left shadow-sm">
+              <thead className="uppercase">
+                <tr className="text-left bg-slate-400">
+                  <th className="px-6">Source</th>
+                  <th className="px-6">Rate</th>
+                  <th className="px-6">Fees</th>
+                  <th className="px-6">Amount</th>
                 </tr>
               </thead>
               <tbody>{ratesRows}</tbody>
             </table>
           </div>
-          <div>
-            <p className="text-gray-500">
-              Last updated on: <span>{status.updated_on.toString()}</span>
-            </p>
-          </div>
+          <Footer status={status} />
         </div>
-
-        {/*
-          Title
-          Mid-rate
-          Rates table
-          Rates history
-         */}
       </main>
     </>
   );
@@ -149,11 +176,11 @@ const RateRow = ({ rateData, amount }: RateProps) => {
   const fee = rateData.fee;
   const phpAmount = amount !== 0 ? exchangeRate * (amount - fee) : 0;
   return (
-    <tr id={rateData.id}>
-      <td>{rateData.source}</td>
-      <td>{exchangeRate.toFixed(2)}</td>
-      <td>{fee.toFixed(2)}</td>
-      <td>{phpAmount.toFixed(2)}</td>
+    <tr id={rateData.id} className="even:bg-slate-200">
+      <td className="px-6">{rateData.source}</td>
+      <td className="px-6">{exchangeRate.toFixed(2)}</td>
+      <td className="px-6">{fee.toFixed(2)}</td>
+      <td className="px-6">{amountFormatter.format(phpAmount)} PHP</td>
     </tr>
   );
 };
