@@ -7,6 +7,7 @@ import { amountFormatter } from "../lib/formatter";
 import Input from "../components/Input";
 import Footer from "../components/Footer";
 import RateRow from "../components/RateRow";
+import ThemeSwitch from "../components/ThemeSwitch";
 
 type HomePageProps = {
   rates: ExchangeRate[];
@@ -95,72 +96,74 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <div className="container mx-auto pt-4 px-4">
-          <header>
-            <menu>
-              <div className="flex justify-between">
-                <span>Say Hello</span>
-                <span>Dark Mode</span>
-              </div>
-            </menu>
-            <div className="text-center text-3xl mt-4">
-              <h1 className="font-bold underline">SGD to PHP Rates</h1>
+      <div className="container flex flex-col items-center min-w-full min-h-full mx-auto pt-4 px-4 dark:bg-gray-900 dark:text-gray-100">
+        <header>
+          <div className="flex justify-between w-96">
+            <span className="text-sm hover:underline">
+              <a href="mailto:hey@sgdtopeso.com">Say Hi!</a>
+            </span>
+            <span>
+              <ThemeSwitch />
+            </span>
+          </div>
+          <div className="text-center text-3xl mt-8">
+            <h1 className="font-bold underline">SGD to PHP Rates</h1>
+          </div>
+        </header>
+        <div className="text-center font-semibold mt-8 mb-4 h-14">
+          <p className="text-slate-400">MARKET RATE: 1 SGD =</p>
+          <p className="text-xl hover:text-2xl font-bold duration-200">
+            {midRate} Philippine Pesos
+          </p>
+        </div>
+        <div className="flex justify-center">
+          <div className="flex flex-col items-center md:flex-row space-y-2 md:space-y-0">
+            <div className="px-4 md:my-0">
+              <p>SGD</p>
+              <Input value={sgdAmountStr} onChange={handleSgdAmountChange} />
             </div>
-          </header>
-          <div className="text-center font-semibold my-8 h-14">
-            <p className="text-slate-400">MARKET RATE: 1 SGD =</p>
-            <p className="text-xl hover:text-2xl font-bold duration-200">
-              {midRate} Philippine Pesos
-            </p>
-          </div>
-          {/* TODO Change to grid */}
-          <div className="flex justify-center">
-            <div className="flex flex-col md:flex-row">
-              <div className="px-4 mb-2 md:my-0">
-                <p>SGD</p>
-                <Input value={sgdAmountStr} onChange={handleSgdAmountChange} />
-              </div>
-              <div className="mx-auto self-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="md:rotate-90 w-4 h-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"
-                  />
-                </svg>
-              </div>
-              <div className="px-4 mt-2 md:my-0">
-                <p>PHP</p>
-                <Input value={phpAmountStr} onChange={handlePhpAmountChange} />
-              </div>
+            <div className="mx-auto">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="md:rotate-90 w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"
+                />
+              </svg>
             </div>
-          </div>
-          <div className="flex justify-center mt-12 mb-12 overflow-auto relative">
-            <table className="table-fixed text-left shadow-sm">
-              <thead>
-                <tr className="uppercase text-left bg-slate-400">
-                  <th className="pl-6">Source</th>
-                  <th className="px-4">Rate</th>
-                  <th className="px-4">Fees</th>
-                  <th className="px-4 w-40">Amount</th>
-                </tr>
-              </thead>
-              <tbody>{ratesRows}</tbody>
-            </table>
-          </div>
-          <div>
-            <Footer status={status} />
+            <div className="px-4 md:my-0">
+              <p>PHP</p>
+              <Input value={phpAmountStr} onChange={handlePhpAmountChange} />
+            </div>
           </div>
         </div>
-      </main>
+        {/* <div className="mt-5">
+          <p className="text-sm">Last updated: 7 hours ago</p>
+        </div> */}
+        <div className="flex justify-center my-8 overflow-auto relative">
+          <table className="table-fixed text-left shadow-sm">
+            <thead>
+              <tr className="uppercase text-left bg-gray-200 dark:bg-gray-700">
+                <th className="pl-4 py-2">Source</th>
+                <th className="px-4">Rate</th>
+                <th className="px-4">Fees</th>
+                <th className="px-4 w-40">Amount</th>
+              </tr>
+            </thead>
+            <tbody>{ratesRows}</tbody>
+          </table>
+        </div>
+        <div>
+          <Footer status={status} />
+        </div>
+      </div>
     </>
   );
 };

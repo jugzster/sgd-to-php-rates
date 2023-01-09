@@ -10,14 +10,15 @@ type RateProps = {
 const RateRow = ({ rateData, amount }: RateProps) => {
   const exchangeRate = rateData.rate;
   const fee = rateData.fee;
-  const phpAmount = amount !== 0 ? exchangeRate * (amount - fee) : 0;
+  const phpAmount =
+    amount !== 0 && amount - fee > 0 ? exchangeRate * (amount - fee) : 0;
 
   return (
-    <tr id={rateData.id} className="hover:bg-stone-100 even:bg-slate-200">
-      <td className="pl-6">{rateData.source}</td>
-      <td className="px-6">{exchangeRate.toFixed(2)}</td>
-      <td className="px-6">{fee.toFixed(2)}</td>
-      <td className="px-4">{amountFormatter.format(phpAmount)} PHP</td>
+    <tr id={rateData.id} className="even:bg-gray-200 dark:even:bg-gray-800">
+      <td className="pl-4 py-2">{rateData.source}</td>
+      <td className="px-4">{exchangeRate.toFixed(2)}</td>
+      <td className="px-4">${fee.toFixed(2)}</td>
+      <td className="px-4">₱{amountFormatter.format(phpAmount)}</td>
     </tr>
   );
 };
