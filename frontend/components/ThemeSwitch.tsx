@@ -7,8 +7,13 @@ const loadDarkMode = () => {
     return false;
   }
 
-  const value = localStorage.getItem("darkMode");
-  return value === null ? false : JSON.parse(value);
+  if ("darkMode" in localStorage) {
+    const value = localStorage.getItem("darkMode");
+    return value === null ? false : JSON.parse(value);
+  }
+
+  // System setting
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
 };
 
 const ThemeSwitch = () => {
