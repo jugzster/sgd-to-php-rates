@@ -88,18 +88,18 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
   return (
     <>
       <Head>
-        <title>SGD to PHP Rates</title>
+        <title>SGD/PHP Rates</title>
         <meta
           name="description"
           content="Get SGD to PHP rates from remittance centers"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/peso.png" />
       </Head>
-      <div className="container flex flex-col items-center min-w-full min-h-full mx-auto pt-4 px-4 dark:bg-gray-900 dark:text-gray-100">
+      <div className="flex flex-col items-center min-w-full min-h-screen mx-auto pt-4 px-4 dark:bg-gray-900 dark:text-gray-100">
         <header>
-          <div className="flex justify-between w-96">
-            <span className="text-sm hover:underline">
+          <div className="flex justify-between w-96 px-2">
+            <span className="text-sm hover:underline decoration-yellow-400 decoration-2">
               <a href="mailto:hey@sgdtopeso.com">Say Hi!</a>
             </span>
             <span>
@@ -120,7 +120,11 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
           <div className="flex flex-col items-center md:flex-row space-y-2 md:space-y-0">
             <div className="px-4 md:my-0">
               <p>SGD</p>
-              <Input value={sgdAmountStr} onChange={handleSgdAmountChange} />
+              <Input
+                value={sgdAmountStr}
+                maxLength={8}
+                onChange={handleSgdAmountChange}
+              />
             </div>
             <div className="mx-auto">
               <svg
@@ -140,21 +144,25 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
             </div>
             <div className="px-4 md:my-0">
               <p>PHP</p>
-              <Input value={phpAmountStr} onChange={handlePhpAmountChange} />
+              <Input
+                value={phpAmountStr}
+                maxLength={9}
+                onChange={handlePhpAmountChange}
+              />
             </div>
           </div>
         </div>
         {/* <div className="mt-5">
           <p className="text-sm">Last updated: 7 hours ago</p>
         </div> */}
-        <div className="flex justify-center my-8 overflow-auto relative">
+        <div className="flex justify-center my-8">
           <table className="table-fixed text-left shadow-sm">
             <thead>
-              <tr className="uppercase text-left bg-gray-200 dark:bg-gray-700">
-                <th className="pl-4 py-2">Source</th>
+              <tr className="text-left bg-gray-200 dark:bg-gray-700">
+                <th className="pl-4 py-2">Send with</th>
                 <th className="px-4">Rate</th>
                 <th className="px-4">Fees</th>
-                <th className="px-4 w-40">Amount</th>
+                <th className="px-4 w-40">You get</th>
               </tr>
             </thead>
             <tbody>{ratesRows}</tbody>
