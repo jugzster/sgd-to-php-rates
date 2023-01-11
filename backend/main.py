@@ -1,16 +1,33 @@
+from datetime import datetime
 import os
 import secrets
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 from exchange_rate import ExchangeRate
 import rate_scraper
-from database import get_latest_rates, save_latest_rates, save_historical_rates
+from database import (
+    get_latest_rates,
+    save_latest_rates,
+    save_historical_rates,
+    get_latest_status,
+    save_status,
+)
+from status import Status
 
 app = FastAPI()
 security = HTTPBasic()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 load_dotenv()
 api_user = os.getenv("API_USER")
@@ -31,12 +48,22 @@ async def get_rates():
 @app.post("/scraperates", response_model=list[ExchangeRate])
 async def scrape(credentials: HTTPBasicCredentials = Depends(security)):
     verify(credentials)
-    rates, _ = await rate_scraper.scrape_rates()
+    rates, errors = await rate_scraper.scrape_rates()
+    date_now = datetime.utcnow()
 
     # TODO async via Motor
-    save_latest_rates(rates)
-    save_historical_rates(rates)
-    return rates
+    save_latest_rates(rates, date_now)
+    save_historical_rates(rates, date_now)
+    save_status(date_now, errors)
+
+    latest_rates = get_latest_rates()
+    return latest_rates
+
+
+@app.get("/status", response_model=Status)
+async def get_status():
+    status_result = get_latest_status()
+    return status_result
 
 
 def verify(credentials: HTTPBasicCredentials) -> None:

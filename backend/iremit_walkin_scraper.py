@@ -23,34 +23,49 @@ def get_rate():
         if not images_description:
             continue
 
-        description: str = images_description[0].lower()
+        description: str = images_description[0].upper()
 
-        if "exchange rate for today" in description:
-            text_to_parse = description.split("exchange rate for today", 1)[1]
+        if "EXCHANGE RATE FOR TODAY" in description:
+            text_to_parse = description.split("EXCHANGE RATE FOR TODAY", 1)[1]
 
             split = text_to_parse.split()
             i = 0
             length = len(split)
             while i < length:
                 curr = split[i]
-                if curr == "walk-in" or curr == "walkin" and i + 1 < length:
+
+                # If no "WALK-IN" e.g. "IREMITX 41.10 41.25", get 2nd rate
+                if curr == "IREMITX" and i + 2 < length and not is_walkin(split[i + 2]):
+                    next_token = split[i + 2]
+                    if is_decimal(next_token):
+                        return to_exchange_rate(next_token, timestamp)
+
+                if is_walkin(curr) and i + 1 < length:
                     next_token = split[i + 1]
                     if is_decimal(next_token):
-                        return ExchangeRate(
-                            effective_on=timestamp,
-                            source=SOURCE,
-                            rate=next_token,
-                            fee=FEE,
-                            updated_on=datetime.now(),
-                        )
+                        return to_exchange_rate(next_token, timestamp)
                     break
 
                 i += 1
     raise FacebookPostNotFoundError("IRemit Walk-in rate from Facebook not found")
 
 
-def is_decimal(string) -> bool:
+def is_decimal(string: str) -> bool:
     return string.replace(".", "", 1).isdigit()
+
+
+def is_walkin(string: str) -> bool:
+    return string.replace("-", "").upper() == "WALKIN"
+
+
+def to_exchange_rate(string: str, timestamp: datetime) -> ExchangeRate:
+    return ExchangeRate(
+        effective_on=timestamp,
+        source=SOURCE,
+        rate=string,
+        fee=FEE,
+        updated_on=datetime.now(),
+    )
 
 
 def main():
