@@ -8,6 +8,9 @@ import Input from "../components/Input";
 import Footer from "../components/Footer";
 import RateRow from "../components/RateRow";
 import ThemeSwitch from "../components/ThemeSwitch";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/utc";
+import utc from "dayjs/plugin/relativeTime";
 
 type HomePageProps = {
   rates: ExchangeRate[];
@@ -78,6 +81,13 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
     }
     return 0;
   });
+
+  dayjs.extend(relativeTime);
+  dayjs.extend(utc);
+
+  const updatedOnUtc = dayjs.utc(status.updated_on);
+  const utcNow = new Date().toUTCString();
+  const lastUpdated = updatedOnUtc.from(utcNow);
 
   const ratesRows = sortedrates
     .filter((rate) => rate.source !== MID_RATE_TAG)
@@ -152,13 +162,13 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
             </div>
           </div>
         </div>
-        {/* <div className="mt-5">
-          <p className="text-sm">Last updated: 7 hours ago</p>
-        </div> */}
-        <div className="flex justify-center my-8">
+        <div className="mt-10">
+          <p className="text-sm">Last updated {lastUpdated}</p>
+        </div>
+        <div className="flex justify-center mt-4 mb-8">
           <table className="table-fixed text-left shadow-sm">
             <thead>
-              <tr className="text-left bg-gray-200 dark:bg-gray-700">
+              <tr className="text-xs uppercase text-gray-500 bg-gray-200 dark:bg-gray-700 dark:text-gray-100">
                 <th className="pl-4 py-2">Send with</th>
                 <th className="px-4">Rate</th>
                 <th className="px-4">Fees</th>
@@ -169,7 +179,7 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
           </table>
         </div>
         <div>
-          <Footer status={status} />
+          <Footer />
         </div>
       </div>
     </>
