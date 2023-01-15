@@ -1,7 +1,11 @@
+# syntax = docker/dockerfile:1.2
 # For more information, please refer to https://aka.ms/vscode-docker-python
 FROM python:3.10
 
 WORKDIR /app
+
+# Load secret file, from https://render.com/docs/docker-secrets#secret-files-in-docker-builds
+RUN --mount=type=secret,id=_env,dst=/etc/secrets/.env cat /etc/secrets/.env
 
 # Install pip requirements
 COPY requirements.txt .
