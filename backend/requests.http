@@ -6,3 +6,11 @@ POST http://127.0.0.1:8000/scraperates
 Authorization: Basic user:password
 ###
 GET http://127.0.0.1:8000/status
+
+### In Docker container
+GET http://127.0.0.1:8069/rates
+###
+POST http://127.0.0.1:8069/scraperates
+Authorization: Basic user:password
+###
+GET http://127.0.0.1:8069/status
