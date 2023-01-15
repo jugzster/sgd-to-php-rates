@@ -1,8 +1,8 @@
 aiohttp==3.8.3
 facebook_scraper==0.2.59
-fastapi==0.88.0
-playwright==1.29.0
-pydantic==1.10.2
+fastapi==0.89.1
+playwright==1.29.1
+pydantic==1.10.4
 pymongo==4.3.3
 python-dotenv==0.21.0
 PyYAML==6.0
