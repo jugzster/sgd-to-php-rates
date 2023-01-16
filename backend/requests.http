@@ -14,3 +14,11 @@ POST http://127.0.0.1:8069/scraperates
 Authorization: Basic user:password
 ###
 GET http://127.0.0.1:8069/status
+
+### In Render
+GET https://sgd-to-php-rates.onrender.com/rates
+###
+POST https://sgd-to-php-rates.onrender.com/scraperates
+Authorization: Basic user:password
+###
+GET https://sgd-to-php-rates.onrender.com/status
