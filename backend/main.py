@@ -32,6 +32,8 @@ app.add_middleware(
 load_dotenv()
 api_user = os.getenv("API_USER")
 api_password = os.getenv("API_PASSWORD")
+for k, v in os.environ.items():
+    print(k, v)
 
 
 @app.get("/")

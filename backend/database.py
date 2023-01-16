@@ -24,6 +24,9 @@ db_name = os.getenv("DATABASE_NAME")
 client = MongoClient(db_url)
 db = client[db_name]
 
+logger.info("db_name: %s", db_name)
+print(f"db_name: {db_name}")
+
 
 def get_latest_rates() -> list[ExchangeRate]:
     try:
