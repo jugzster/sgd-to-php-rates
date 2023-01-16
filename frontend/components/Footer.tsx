@@ -1,5 +1,3 @@
-import { Status } from "../lib/status";
-
 const Footer = () => {
   return (
     <div className="text-center text-gray-900 dark:text-gray-100">
@@ -9,7 +7,7 @@ const Footer = () => {
           Or better exchange rates? Let us know!
         </a>
       </p>
-      <p className="text-xs mt-8 text-gray-500">
+      <p className="text-xs mt-14 text-gray-500">
         <a
           target="_blank"
           rel="noreferrer"
