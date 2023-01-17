@@ -35,7 +35,12 @@ def get_rate():
                 curr = split[i]
 
                 # If no "WALK-IN" e.g. "IREMITX 41.10 41.25", get 2nd rate
-                if curr == "IREMITX" and i + 2 < length and not is_walkin(split[i + 2]):
+                if (
+                    curr == "IREMITX"
+                    and "WALK-IN" not in text_to_parse
+                    and "WALKIN" not in text_to_parse
+                    and i + 2 < length
+                ):
                     next_token = split[i + 2]
                     if is_decimal(next_token):
                         return to_exchange_rate(next_token, timestamp)
