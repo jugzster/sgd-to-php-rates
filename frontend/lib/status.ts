@@ -1,15 +1,23 @@
-import fetchJson from "./api";
-
-const API_URL = process.env.API_URL;
+import clientPromise from "./mongodb";
 
 export type Status = Readonly<{
-  id: string;
-  status: string;
-  updated_on: Date;
-  errors: string[];
+  _id: string;
+  updatedOn: Date;
 }>;
 
 export async function getLatestStatus(): Promise<Status> {
-  const url = `${API_URL}/status`;
-  return await fetchJson(url);
+  const client = await clientPromise;
+  const db = client.db(process.env.DATABASE_NAME);
+  const result = await db.collection("status").findOne(
+    {},
+    {
+      projection: {
+        updatedOn: 1,
+      },
+      sort: { _id: -1 }, // Descending
+    }
+  );
+
+  const status = JSON.parse(JSON.stringify(result));
+  return status;
 }

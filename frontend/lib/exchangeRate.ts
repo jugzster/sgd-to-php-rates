@@ -1,17 +1,31 @@
-import fetchJson from "./api";
-
-const API_URL = process.env.API_URL;
+import clientPromise from "./mongodb";
 
 export type ExchangeRate = Readonly<{
-  id: string;
+  _id: string;
   source: string;
   rate: number;
   fee: number;
-  effective_on: Date;
-  updated_on: Date;
+  effectiveOn: Date;
+  updatedOn: Date;
 }>;
 
 export async function getRates(): Promise<ExchangeRate[]> {
-  const url = `${API_URL}/rates`;
-  return await fetchJson(url);
+  const client = await clientPromise;
+  const db = client.db(process.env.DATABASE_NAME);
+  const results = await db
+    .collection("latestRates")
+    .find<ExchangeRate>(
+      {},
+      {
+        projection: {
+          source: 1,
+          rate: { $toDouble: "$rate" },
+          fee: 1,
+        },
+      }
+    )
+    .toArray();
+
+  const rates = JSON.parse(JSON.stringify(results));
+  return rates;
 }
