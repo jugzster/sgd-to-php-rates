@@ -7,7 +7,7 @@ import yaml
 from bson.decimal128 import Decimal128
 
 from pymongo import InsertOne, MongoClient, UpdateOne
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 from exchange_rate import ExchangeRate
 from status import Status
 
@@ -18,7 +18,7 @@ with open("log_config.yaml", "r", encoding="utf-8") as f:
 
 logger = logging.getLogger(__name__)
 
-load_dotenv()
+load_dotenv(find_dotenv())
 db_url = os.getenv("DATABASE_URL")
 db_name = os.getenv("DATABASE_NAME")
 
