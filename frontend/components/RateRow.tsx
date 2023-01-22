@@ -36,7 +36,7 @@ const RateRow = ({ rateData, amount }: RateProps) => {
     amount !== 0 && amount - fee > 0 ? exchangeRate * (amount - fee) : 0;
 
   return (
-    <tr id={rateData.id} className="even:bg-gray-200 dark:even:bg-gray-800">
+    <tr id={rateData._id} className="even:bg-gray-200 dark:even:bg-gray-800">
       <td className="pl-4 py-2">
         <a
           href={getLink(rateData.source)}

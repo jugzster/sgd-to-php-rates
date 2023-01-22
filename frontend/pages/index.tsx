@@ -85,14 +85,14 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
   dayjs.extend(relativeTime);
   dayjs.extend(utc);
 
-  const updatedOnUtc = dayjs.utc(status.updated_on);
+  const updatedOnUtc = dayjs.utc(status.updatedOn);
   const utcNow = new Date().toUTCString();
   const lastUpdated = updatedOnUtc.from(utcNow);
 
   const ratesRows = sortedrates
     .filter((rate) => rate.source !== MID_RATE_TAG)
     .map((rate) => {
-      return <RateRow key={rate.id} rateData={rate} amount={sgdAmount} />;
+      return <RateRow key={rate._id} rateData={rate} amount={sgdAmount} />;
     });
 
   return (
