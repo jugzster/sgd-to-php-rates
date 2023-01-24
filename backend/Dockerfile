@@ -5,7 +5,7 @@ FROM python:3.10
 WORKDIR /app
 
 # Load secret file, from https://render.com/docs/docker-secrets#secret-files-in-docker-builds
-RUN --mount=type=secret,id=_env,dst=/etc/secrets/.env cat /etc/secrets/.env && cp /etc/secrets/.env .
+RUN --mount=type=secret,id=_env,dst=/etc/secrets/.env cp /etc/secrets/.env .
 
 # Install pip requirements
 COPY requirements.txt .
