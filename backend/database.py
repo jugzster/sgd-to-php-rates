@@ -22,8 +22,6 @@ load_dotenv()
 db_url = os.getenv("DATABASE_URL")
 db_name = os.getenv("DATABASE_NAME")
 
-print("db_name", db_name)
-
 client = MongoClient(db_url)
 db = client[db_name]
 
