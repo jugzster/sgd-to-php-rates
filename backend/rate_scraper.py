@@ -26,7 +26,7 @@ async def scrape_rates() -> tuple[list[ExchangeRate], list[Exception]]:
 
     # TODO Add retries, especially IRemit FB and Kabayan. Check https://github.com/jd/tenacity
     results = await asyncio.gather(
-        asyncio.to_thread(mid_rate_scraper.get_rate),
+        mid_rate_scraper.get_rate(),
         iremit_scraper.get_rate(),
         asyncio.to_thread(iremit_walkin_scraper.get_rate),
         kabayan_scraper.get_rate(),
