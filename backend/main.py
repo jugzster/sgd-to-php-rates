@@ -33,8 +33,6 @@ load_dotenv()
 api_user = os.getenv("API_USER")
 api_password = os.getenv("API_PASSWORD")
 
-print("api_user", api_user)
-
 
 @app.get("/")
 async def root():
