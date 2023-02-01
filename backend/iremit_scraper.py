@@ -1,11 +1,16 @@
 import asyncio
 from datetime import datetime
+import os
 
+from dotenv import load_dotenv
 from playwright.async_api import async_playwright
 from exchange_rate import ExchangeRate
 
 SOURCE = "IRemit"
 FEE = 4
+
+load_dotenv()
+timeout = int(os.getenv("SCRAPE_TIMEOUT"))
 
 
 async def get_rate() -> ExchangeRate:
@@ -16,7 +21,7 @@ async def get_rate() -> ExchangeRate:
         url = "https://iremitx.com"
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
-        await page.goto(url)
+        await page.goto(url, timeout=timeout)
 
         await page.locator("select[id='select-web']").select_option("SIN")
         rate_text = await page.locator("span.exchange-rate-value").first.inner_text()
