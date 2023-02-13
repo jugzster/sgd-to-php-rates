@@ -13,6 +13,7 @@ Frontend
 Backend
 - Python
 - [FastAPI](https://fastapi.tiangolo.com)
+- [MongoDB](https://www.mongodb.com)
 
 ## Live site
 https://www.sgdtopeso.com
