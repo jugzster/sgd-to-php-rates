@@ -20,7 +20,11 @@ async def get_rate() -> ExchangeRate:
     async with async_playwright() as p:
         url = "https://sg.metroremit.com/"
         browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page()
+        # Change user agent as this website blocks headless user agent
+        context = await browser.new_context(
+            user_agent="'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'"
+        )
+        page = await context.new_page()
         await page.goto(url, timeout=timeout)
 
         main_text = await page.locator("#popular-packages >> text=SGD").inner_text()

@@ -57,11 +57,10 @@ def save_latest_rates(exchange_rates: list[ExchangeRate], updated_on: datetime):
 
         # Bulk upsert records
         mongo_rates = [to_mongodb_object(x, updated_on) for x in exchange_rates]
-        requests = []
-        for rate in mongo_rates:
-            requests.append(
-                UpdateOne({"source": rate["source"]}, {"$set": rate}, upsert=True)
-            )
+        requests = [
+            UpdateOne({"source": rate["source"]}, {"$set": rate}, upsert=True)
+            for rate in mongo_rates
+        ]
         result = collection.bulk_write(requests)
         logger.info("latestRates %i records updated", result.modified_count)
     except Exception:
