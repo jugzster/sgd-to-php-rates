@@ -1,51 +1,41 @@
 import asyncio
 from datetime import datetime
-import os
 
-from dotenv import load_dotenv
-from playwright.async_api import async_playwright
+import aiohttp
 from exchange_rate import ExchangeRate
 
 SOURCE = "Wise"
 FEE = 4.27
 
-load_dotenv()
-timeout = int(os.getenv("SCRAPE_TIMEOUT"))
-
 
 async def get_rate() -> ExchangeRate:
-    """
-    Scrape from https://wise.com/gb/currency-converter/sgd-to-php-rate
-    Sample:
-        <td class="table-hero__cell_1ZAms7u3_9">
-        <span class="exchangeRate_3VNnyNPrdL">
-            <span class="goodExchangeRate_1u9dlr4od8"></span>
-            <span class="rate_3HN3HQ2wh2">40.9162</span>
-        </span>
-        <span class="labelContent_1PEAlZdRtv"
-            >Mid-market rate</span
-        >
-        </td>
-    """
-    async with async_playwright() as p:
-        url = "https://wise.com/gb/currency-converter/sgd-to-php-rate"
-        browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page()
-        await page.goto(url, timeout=timeout)
+    # Get from API https://wise.com/gateway/v4/comparisons?sourceCurrency=SGD&targetCurrency=PHP&sendAmount=1000
+    # Not scrape, Wise changed their HTML structure
+    async with aiohttp.ClientSession() as session:
+        async with session.get(
+            "https://wise.com/gateway/v4/comparisons",
+            params={
+                "sourceCurrency": "SGD",
+                "targetCurrency": "PHP",
+                "sendAmount": 1000,
+            },
+            timeout=20,
+        ) as response:
+            data = await response.json()
 
-        rate_text = await page.locator("td:has-text('Mid-market rate')").inner_text()
-
-        await browser.close()
-
-        rate = rate_text.splitlines()[0]
-        date_now = datetime.now()
-        return ExchangeRate(
-            effective_on=date_now,
-            source=SOURCE,
-            rate=rate,
-            fee=FEE,
-            updated_on=date_now,
-        )
+    provider = next(
+        provider for provider in data["providers"] if provider["name"] == "Wise"
+    )
+    quotes = provider["quotes"]
+    rate = quotes[0]["rate"]
+    date_now = datetime.now()
+    return ExchangeRate(
+        effective_on=date_now,
+        source=SOURCE,
+        rate=rate,
+        fee=FEE,
+        updated_on=date_now,
+    )
 
 
 async def main():
