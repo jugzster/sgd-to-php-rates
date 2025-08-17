@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 async def scrape_rates() -> tuple[list[ExchangeRate], list[Exception]]:
     start = time.perf_counter()
 
-    # TODO Add retries, especially Kabayan. Check https://github.com/jd/tenacity
+    # TODO Add retries, heck https://github.com/jd/tenacity
     results = await asyncio.gather(
         asyncio.to_thread(mid_rate_scraper.get_rate),
         iremit_scraper.get_rate(),

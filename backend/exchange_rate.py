@@ -9,7 +9,7 @@ class ExchangeRate(BaseModel):
     Exchange Rate data
     """
 
-    id: Optional[str]
+    id: Optional[str] = None
     source: str
     effective_on: datetime
     rate: Decimal
