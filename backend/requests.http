@@ -1,19 +1,20 @@
-GET http://127.0.0.1:8000
+
+GET http://localhost:8000
 ###
-GET http://127.0.0.1:8000/rates
+GET http://localhost:8000/rates
 ###
-POST http://127.0.0.1:8000/scraperates
+POST http://localhost:8000/scraperates
 Authorization: Basic user:password
 ###
-GET http://127.0.0.1:8000/status
+GET http://localhost:8000/status
 
 ### In Docker container
-GET http://127.0.0.1:8069/rates
+GET http://localhost:8069/rates
 ###
-POST http://127.0.0.1:8069/scraperates
+POST http://localhost:8069/scraperates
 Authorization: Basic user:password
 ###
-GET http://127.0.0.1:8069/status
+GET http://localhost:8069/status
 
 ### In Render
 GET https://sgd-to-php-rates.onrender.com/rates
