@@ -1,9 +1,9 @@
-aiohttp==3.8.3
-facebook_scraper==0.2.59
-fastapi==0.89.1
-playwright==1.30.0
-pydantic==1.10.4
+aiohttp==3.12.15
+fastapi==0.116.1
+playwright==1.54.0
+pydantic==2.11.7
 pymongo==4.3.3
-python-dotenv==0.21.1
-PyYAML==6.0
-uvicorn==0.20.0
+python-dotenv==1.1.1
+PyYAML==6.0.2
+uvicorn==0.35.0
+yfinance==0.2.65

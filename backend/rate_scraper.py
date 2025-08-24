@@ -1,13 +1,18 @@
 import asyncio
+from datetime import datetime
 import time
 import logging
 import logging.config
 import yaml
 
+from database import (
+    save_historical_rates,
+    save_latest_rates,
+    save_status,
+)
 from exchange_rate import ExchangeRate
 import dbs_scraper
 import iremit_scraper
-import iremit_walkin_scraper
 import kabayan_scraper
 import mid_rate_scraper
 import metroremit_scraper
@@ -21,14 +26,24 @@ with open("log_config.yaml", "r", encoding="utf-8") as f:
 logger = logging.getLogger(__name__)
 
 
+async def run_scrape() -> tuple[list[ExchangeRate], list[Exception]]:
+    rates, errors = await scrape_rates()
+    date_now = datetime.utcnow()
+
+    save_latest_rates(rates, date_now)  # Saves to MongoDB
+    save_historical_rates(rates, date_now)  # Saves to MongoDB
+    save_status(date_now, errors)  # Saves to MongoDB
+
+    return rates, errors
+
+
 async def scrape_rates() -> tuple[list[ExchangeRate], list[Exception]]:
     start = time.perf_counter()
 
-    # TODO Add retries, especially IRemit FB and Kabayan. Check https://github.com/jd/tenacity
+    # TODO Add retries, heck https://github.com/jd/tenacity
     results = await asyncio.gather(
-        mid_rate_scraper.get_rate(),
+        asyncio.to_thread(mid_rate_scraper.get_rate),
         iremit_scraper.get_rate(),
-        asyncio.to_thread(iremit_walkin_scraper.get_rate),
         kabayan_scraper.get_rate(),
         steadfast_scraper.get_rate(),
         dbs_scraper.get_rate(),
@@ -53,7 +68,9 @@ async def scrape_rates() -> tuple[list[ExchangeRate], list[Exception]]:
 
 
 async def main():
-    _, _ = await scrape_rates()
+    rates, errors = await run_scrape()
+    print(f"{len(rates)} new rates:", rates)
+    print(f"{len(errors)} errors: {errors}")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,3 @@
-import React from "react";
 import { ExchangeRate } from "../lib/exchangeRate";
 import { amountFormatter } from "../lib/formatter";
 
