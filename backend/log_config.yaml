@@ -11,11 +11,6 @@ handlers:
     level: INFO
     formatter: simple
     stream: ext://sys.stdout
-  file:
-    class: logging.FileHandler
-    level: ERROR
-    formatter: simple
-    filename: rates.log
 root:
   level: DEBUG
-  handlers: [console, file]
+  handlers: [console]

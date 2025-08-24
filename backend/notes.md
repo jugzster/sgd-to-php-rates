@@ -24,8 +24,6 @@
 ### Build
 
 docker build -t sgd-to-php-rates .
-Old:
-docker build --secret id=\_env,src=.env -t sgd-to-php-rates .
 
 ### Run with env file
 
@@ -40,3 +38,15 @@ Playwright code generator
 
 Example:
 playwright codegen https://sg.metroremit.com/
+
+## AWS
+
+### Push the image to Amazon ECR
+
+1. In terminal, set access keys, see accounts page https://d-9767a4688d.awsapps.com/start/#/?tab=accounts
+   SET AWS_ACCESS_KEY_ID=banana69
+   SET AWS_SECRET_ACCESS_KEY=banana69
+   SET AWS_SESSION_TOKEN=banana69
+
+2. Push to ECR using AWS CLI
+   aws ecr create-repository --repository-name "sgd-to-php-rates" --region "ap-southeast-1"

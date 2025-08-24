@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from playwright.async_api import async_playwright
 from exchange_rate import ExchangeRate
+from utils import get_browser_launch_args
 
 SOURCE = "IRemit"
 FEE = 4
@@ -19,7 +20,7 @@ async def get_rate() -> ExchangeRate:
     """
     async with async_playwright() as p:
         url = "https://iremitx.com"
-        browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(headless=True, args=get_browser_launch_args())
         page = await browser.new_page()
         await page.goto(url, timeout=timeout)
 

@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from playwright.async_api import async_playwright
 from exchange_rate import ExchangeRate
+from utils import get_browser_launch_args
 
 SOURCE = "MetroRemit"
 FEE = 4
@@ -19,7 +20,7 @@ async def get_rate() -> ExchangeRate:
     """
     async with async_playwright() as p:
         url = "https://sg.metroremit.com/"
-        browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(headless=True, args=get_browser_launch_args())
         # Change user agent as this website blocks headless user agent
         context = await browser.new_context(
             user_agent="'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'"

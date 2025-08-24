@@ -33,7 +33,7 @@ def get_latest_rates() -> list[ExchangeRate]:
         collection = db.latestRates
         results = collection.find({})
         rates = [to_exchange_rate(r) for r in results]
-        logger.debug("Got %i rates", len(rates))
+        logger.info("Got %i rates", len(rates))
         return rates
     except Exception:
         logger.exception("DB error getting latestRates")
