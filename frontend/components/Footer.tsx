@@ -4,7 +4,7 @@ const Footer = () => {
       <p className="font-bold hover:underline decoration-yellow-400 decoration-2 mb-8">
         <a href="mailto:hey@sgdtopeso.com">
           Want to include a remittance center? <br />
-          Or better exchange rates? Let us know!
+          Got feedback? Let us know!
         </a>
       </p>
       <p className="text-xs mt-14 text-gray-500">

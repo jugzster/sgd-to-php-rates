@@ -13,8 +13,6 @@ const getLink = (source: string): string => {
       return "https://wise.com/gb/currency-converter/sgd-to-php-rate";
     case "iremit":
       return "https://iremitx.com";
-    case "iremit walk-in":
-      return "https://www.facebook.com/iremitsg/";
     case "metroremit":
       return "https://sg.metroremit.com";
     case "kabayan":
@@ -22,7 +20,7 @@ const getLink = (source: string): string => {
     case "steadfast":
       return "https://www.steadfastmoneytransfer.com";
     case "dbs":
-      return "https://www.dbs.com.sg";
+      return "https://www.dbs.com.sg/personal/deposits/pay-with-ease/international-transfers";
     default:
       return "notfound";
   }
