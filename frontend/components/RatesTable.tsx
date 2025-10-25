@@ -31,8 +31,8 @@ const RatesTable = ({ rates, sgdAmount }: RatesTableProps) => {
           <tr className="text-xs uppercase text-gray-500 bg-gray-200 dark:bg-gray-700 dark:text-gray-100">
             <th className="pl-4 py-2">Send with</th>
             <th className="px-4">Rate</th>
+            <th className="px-4 w-20">You get</th>
             <th className="px-4">Fees</th>
-            <th className="px-4 w-40">You get</th>
           </tr>
         </thead>
         <tbody>{ratesRows}</tbody>

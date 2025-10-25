@@ -29,8 +29,7 @@ const getLink = (source: string): string => {
 const RateRow = ({ rateData, amount }: RateProps) => {
   const exchangeRate = rateData.rate;
   const fee = rateData.fee;
-  const phpAmount =
-    amount !== 0 && amount - fee > 0 ? exchangeRate * (amount - fee) : 0;
+  const phpAmount = amount !== 0 ? exchangeRate * amount : 0;
 
   return (
     <tr id={rateData._id} className="even:bg-gray-200 dark:even:bg-gray-800">
@@ -45,8 +44,8 @@ const RateRow = ({ rateData, amount }: RateProps) => {
         </a>
       </td>
       <td className="px-4">{exchangeRate.toFixed(2)}</td>
-      <td className="px-4">${fee.toFixed(2)}</td>
       <td className="px-4">₱{amountFormatter.format(phpAmount)}</td>
+      <td className="px-4">${fee.toFixed(2)}</td>
     </tr>
   );
 };
