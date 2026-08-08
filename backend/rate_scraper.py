@@ -12,7 +12,6 @@ from database import (
 )
 from exchange_rate import ExchangeRate
 import dbs_scraper
-import iremit_scraper
 import kabayan_scraper
 import mid_rate_scraper
 import metroremit_scraper
@@ -43,7 +42,6 @@ async def scrape_rates() -> tuple[list[ExchangeRate], list[Exception]]:
     # TODO Add retries, heck https://github.com/jd/tenacity
     results = await asyncio.gather(
         asyncio.to_thread(mid_rate_scraper.get_rate),
-        iremit_scraper.get_rate(),
         kabayan_scraper.get_rate(),
         steadfast_scraper.get_rate(),
         dbs_scraper.get_rate(),

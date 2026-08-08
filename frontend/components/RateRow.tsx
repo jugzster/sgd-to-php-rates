@@ -11,8 +11,6 @@ const getLink = (source: string): string => {
   switch (source.toLowerCase()) {
     case "wise":
       return "https://wise.com/gb/currency-converter/sgd-to-php-rate";
-    case "iremit":
-      return "https://iremitx.com";
     case "metroremit":
       return "https://sg.metroremit.com";
     case "kabayan":
