@@ -8,7 +8,7 @@ from exchange_rate import ExchangeRate
 from utils import get_browser_launch_args
 
 SOURCE = "MetroRemit"
-FEE = 4
+FEE = 5
 
 load_dotenv()
 timeout = int(os.getenv("SCRAPE_TIMEOUT"))
@@ -23,16 +23,16 @@ async def get_rate() -> ExchangeRate:
         browser = await p.chromium.launch(headless=True, args=get_browser_launch_args())
         # Change user agent as this website blocks headless user agent
         context = await browser.new_context(
-            user_agent="'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'"
+            user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
         )
         page = await context.new_page()
         await page.goto(url, timeout=timeout)
 
-        main_text = await page.locator("#popular-packages >> text=SGD").inner_text()
+        rate_text = await page.locator("text=/SGD\\d.*=.*PHP[\\d.]+/i").inner_text()
         await browser.close()
 
-        #  Text sample: 'SGD1 = PHP40.75000'
-        rate_text = main_text.replace(" ", "").upper()
+        #  Text sample: 'SGD1 = PHP47.300000'
+        rate_text = rate_text.replace(" ", "").upper()
         rate = rate_text.split("=", maxsplit=2)[1].removeprefix("PHP")
         date_now = datetime.now()
         return ExchangeRate(
