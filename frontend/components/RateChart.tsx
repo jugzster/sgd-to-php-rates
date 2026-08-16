@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   createChart,
   IChartApi,
@@ -31,7 +31,7 @@ const RateChart = ({ midRate }: RateChartProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadData = useCallback(async (range: string) => {
+  const loadData = async (range: string) => {
     setLoading(true);
     setError(null);
     setData([]);
@@ -44,11 +44,11 @@ const RateChart = ({ midRate }: RateChartProps) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     loadData(selectedRange);
-  }, [selectedRange, loadData]);
+  }, [selectedRange]);
 
   useEffect(() => {
     if (!chartContainerRef.current) return;

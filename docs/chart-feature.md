@@ -6,12 +6,12 @@ Added an interactive chart showing SGD to PHP mid-rate history below the rates t
 
 ## Files Added/Modified
 
-| File | Purpose |
-|------|---------|
-| `frontend/components/RateChart.tsx` | Chart component (new) |
-| `frontend/lib/historicalRates.ts` | API client function (new) |
-| `frontend/pages/api/historical-rates.ts` | Server API endpoint (new) |
-| `frontend/pages/index.tsx` | Added `<RateChart />` to page |
+| File                                     | Purpose                       |
+| ---------------------------------------- | ----------------------------- |
+| `frontend/components/RateChart.tsx`      | Chart component (new)         |
+| `frontend/lib/historicalRates.ts`        | API client function (new)     |
+| `frontend/pages/api/historical-rates.ts` | Server API endpoint (new)     |
+| `frontend/pages/index.tsx`               | Added `<RateChart />` to page |
 
 ## How It Works
 
@@ -35,10 +35,10 @@ Lightweight Charts renders the line
 
 ### Range Behavior
 
-| Range | Data Points | X-Axis Format |
-|-------|-------------|---------------|
-| 1W, 1M, 3M, 6M | All 12-hour snapshots | Unix timestamps (shows time) |
-| 1Y, 2Y, All | One per day (latest snapshot) | Date strings (shows date only) |
+| Range          | Data Points                   | X-Axis Format                  |
+| -------------- | ----------------------------- | ------------------------------ |
+| 1W, 1M, 3M, 6M | All 12-hour snapshots         | Unix timestamps (shows time)   |
+| 1Y, 2Y, All    | One per day (latest snapshot) | Date strings (shows date only) |
 
 ---
 
@@ -51,7 +51,7 @@ A **component** is a reusable piece of UI. Think of it like a custom HTML tag yo
 ```tsx
 const RateChart = ({ midRate }: RateChartProps) => {
   // ... component logic
-  return <div>...</div>;  // What gets rendered
+  return <div>...</div>; // What gets rendered
 };
 ```
 
@@ -66,7 +66,7 @@ const RateChart = ({ midRate }: RateChartProps) => {
 
 ```tsx
 // Parent (index.tsx) passes midRate to RateChart
-<RateChart midRate={midRate} />
+<RateChart midRate={midRate} />;
 
 // Child (RateChart.tsx) receives it
 const RateChart = ({ midRate }: RateChartProps) => {
@@ -114,6 +114,7 @@ useEffect(() => {
 ```
 
 **Dependency array** (the second argument):
+
 - `[]` — runs once when component mounts
 - `[selectedRange]` — runs when `selectedRange` changes
 - No array — runs after every render (usually a bug)
@@ -125,9 +126,9 @@ useEffect(() => {
 **Refs** hold values that persist across renders but don't trigger re-renders when changed.
 
 ```tsx
-const chartContainerRef = useRef<HTMLDivElement>(null);  // DOM element
-const chartRef = useRef<IChartApi | null>(null);          // Chart instance
-const dataRangeRef = useRef<string>("1Y");                // Tracks data's range
+const chartContainerRef = useRef<HTMLDivElement>(null); // DOM element
+const chartRef = useRef<IChartApi | null>(null); // Chart instance
+const dataRangeRef = useRef<string>("1Y"); // Tracks data's range
 ```
 
 **Two uses of refs here:**
@@ -136,23 +137,7 @@ const dataRangeRef = useRef<string>("1Y");                // Tracks data's range
 
 2. **Stable values** — `dataRangeRef` tracks which range the current data belongs to. Unlike state, changing a ref doesn't cause a re-render. This is used to prevent race conditions (see below).
 
-### 6. Callbacks (`useCallback`)
-
-**`useCallback`** memoizes a function so it doesn't get recreated on every render.
-
-```tsx
-const loadData = useCallback(async (range: string) => {
-  setLoading(true);
-  const result = await fetchHistoricalRates(range);
-  dataRangeRef.current = range;
-  setData(result);
-  setLoading(false);
-}, []);  // Empty deps = function is created once, never changes
-```
-
-**Why it matters:** `loadData` is listed as a dependency in the data-fetching effect. Without `useCallback`, `loadData` would be a new function on every render, causing the effect to run infinitely. `useCallback` keeps it stable.
-
-### 7. The Race Condition Fix
+### 6. The Race Condition Fix
 
 **The problem:** When switching ranges quickly (1W → 1Y), two things update at different times:
 
@@ -174,20 +159,20 @@ const dataRangeRef = useRef<string>("1Y");
 
 const loadData = useCallback(async (range: string) => {
   const result = await fetchHistoricalRates(range);
-  dataRangeRef.current = range;  // Mark data with its range
+  dataRangeRef.current = range; // Mark data with its range
   setData(result);
 }, []);
 
 // In the chart update effect:
 useEffect(() => {
-  if (dataRangeRef.current !== selectedRange) return;  // Skip mismatched data
+  if (dataRangeRef.current !== selectedRange) return; // Skip mismatched data
   // ... process data
 }, [data, selectedRange]);
 ```
 
 When the effect runs with stale data, `dataRangeRef.current` ("1W") doesn't match `selectedRange` ("1Y"), so it skips processing. The chart waits until the correct data arrives.
 
-### 8. MutationObserver (Theme Changes)
+### 7. MutationObserver (Theme Changes)
 
 The chart is rendered on a `<canvas>` element by Lightweight Charts — it's outside React's control. When the user toggles dark mode, React re-renders components, but the canvas doesn't update automatically.
 
@@ -216,6 +201,7 @@ This is one case where direct DOM manipulation is necessary — React can't mana
 ### Why a Next.js API route instead of calling the backend?
 
 The existing app follows this pattern:
+
 - **Frontend** connects directly to MongoDB for reads (via `lib/mongodb.ts`)
 - **Backend** (FastAPI on AWS Lambda) handles writes/scraping
 
