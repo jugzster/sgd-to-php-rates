@@ -10,6 +10,7 @@ import Footer from "../components/Footer";
 import MidRate from "../components/MidRate";
 import RatesTable from "../components/RatesTable";
 import LastUpdated from "../components/LastUpdated";
+import RateChart from "../components/RateChart";
 
 type HomePageProps = {
   rates: ExchangeRate[];
@@ -120,6 +121,7 @@ const Home: NextPage<HomePageProps> = ({ rates, status }) => {
         </div>
         <LastUpdated status={status} />
         <RatesTable rates={rates} sgdAmount={sgdAmount} />
+        <RateChart midRate={midRate} />
         <Footer />
       </div>
     </>
